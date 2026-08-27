@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KendaraanController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Menggunakan format RESTful dengan ID kendaraan
+Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');
+Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('kendaraan.update');

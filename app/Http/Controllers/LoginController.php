@@ -12,7 +12,7 @@ class LoginController extends Controller
     public function __invoke(Request $request)
     {
         $creds = $request->validate([
-            'username' => ['required'],
+            'name' => ['required'],
             'password' => ['required']
         ]);
 
@@ -21,7 +21,7 @@ class LoginController extends Controller
             return redirect()->intended('dashboard');
         }
         return back() ->withErrors([
-            'username' => 'Maaf, nama yang anda gunakan tidak sesuai dengan password.',
-        ])->onlyInput('username');
+            'name' => 'Maaf, nama yang anda gunakan tidak sesuai dengan password.',
+        ])->onlyInput('name');
     }
 }

@@ -2,11 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])
@@ -30,3 +31,14 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::get('/dashboard', function () {
     return 'Dashboard — kamu berhasil login!';
 })->middleware('auth')->name('dashboard');
+
+Route::get('login', function(){
+return view('login');
+})->name('login');
+
+Route::post('login', LoginController::class)->name('login.attempt');
+
+Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
+
+Route::view('register', 'register')->name('register');
+Route::post('register', RegisterController::class)->name('register.store');

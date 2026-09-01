@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\VehicleController;
 
-// Menggunakan format RESTful dengan ID kendaraan
-Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');
-Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('kendaraan.update');
+Route::get('/vehicles/{id}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
+Route::put('/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
+
+Route::get('/vehicles/{id}/reminder', [VehicleController::class, 'reminder'])->name('vehicles.reminder');
+Route::post('/vehicles/{id}/reminder', [VehicleController::class, 'kirimPemberitahuan'])->name('vehicles.kirimPemberitahuan');

@@ -37,7 +37,7 @@
                 </div>
 
                 <!-- Form Area -->
-                <form action="{{ route('kendaraan.update', $kendaraan['id'] ?? 1) }}" method="POST" class="flex-1 p-8 flex flex-col space-y-4">
+                <form action="{{ route('vehicles.update', $kendaraan['id'] ?? 1) }}" method="POST" class="flex-1 p-8 flex flex-col space-y-4">
                     @csrf
                     @method('PUT')
                     

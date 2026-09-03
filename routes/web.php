@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\RegisterController;
@@ -8,7 +7,7 @@ use App\Http\Controllers\LoginController;
 Route::get('/', function () {
     return view('welcome');
 });
-
+//Login Page
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
@@ -16,12 +15,16 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
 
-Route::middleware('registered')->group(function () {
-    Route::get('/register', [AuthenticatedSessionController::class, 'create'])
+//Register Page
+Route::middleware('guest')->group(function () {
+    Route::view('register', 'register')->name('register');
+
+    Route::get('/register', [RegisterController::class, 'create'])
         ->name('register');
 
-    Route::post('/register', [AuthenticatedSessionController::class, 'store']);
+    Route::post('/register', [RegisterController::class, 'store']);
 });
+    Route::post('register', RegisterController::class)->name('register.store');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
@@ -41,4 +44,3 @@ Route::post('login', LoginController::class)->name('login.attempt');
 Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
 
 Route::view('register', 'register')->name('register');
-Route::post('register', RegisterController::class)->name('register.store');

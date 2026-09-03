@@ -10,11 +10,33 @@ Route::get('/', function () {
 });
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [RegisterController::class, 'create'])
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+});
+
+Route::middleware('registered')->group(function () {
+    Route::get('/register', [AuthenticatedSessionController::class, 'create'])
         ->name('register');
 
-    Route::post('/register', [RegisterController::class, 'store']);
+    Route::post('/register', [AuthenticatedSessionController::class, 'store']);
 });
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+
+Route::get('/dashboard', function () {
+    return 'Dashboard — kamu berhasil login!';
+})->middleware('auth')->name('dashboard');
+
+Route::get('login', function(){
+return view('login');
+})->name('login');
+
+Route::post('login', LoginController::class)->name('login.attempt');
 
 Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
 

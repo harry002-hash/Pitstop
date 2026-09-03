@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,3 +43,11 @@ Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
 
 Route::view('register', 'register')->name('register');
 Route::post('register', RegisterController::class)->name('register.store');
+
+
+// Chat Test
+Route::middleware('auth')->group(function () {
+    Route::get('/chat',[ChatController::class, 'index'])->name('chat');
+
+    Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+});

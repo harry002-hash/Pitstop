@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitcda2add6397422fb1a2eb5b9207f1575
+class ComposerStaticInit1b2e0a69e9ef0ef9153c8a3c639ea806
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -716,6 +716,7 @@ class ComposerStaticInitcda2add6397422fb1a2eb5b9207f1575
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/LoginController.php',
         'App\\Http\\Controllers\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/RegisterController.php',
+        'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
@@ -9160,9 +9161,9 @@ class ComposerStaticInitcda2add6397422fb1a2eb5b9207f1575
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitcda2add6397422fb1a2eb5b9207f1575::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitcda2add6397422fb1a2eb5b9207f1575::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitcda2add6397422fb1a2eb5b9207f1575::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1b2e0a69e9ef0ef9153c8a3c639ea806::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1b2e0a69e9ef0ef9153c8a3c639ea806::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit1b2e0a69e9ef0ef9153c8a3c639ea806::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -30,7 +30,6 @@
                     onerror="this.style.display='none'"
                 >
 
-                
                 <div class="absolute inset-0 z-20 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
                 
@@ -122,7 +121,7 @@
                             type="submit"
                             class="w-full rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold py-3 shadow-lg shadow-red-600/30 transition"
                         >
-                            Masuk
+                            Daftar
                         </button>
 
                         
@@ -130,10 +129,10 @@
                             Sudah punya akun?
                             @if (Route::has('login'))
                                 <a href="{{ route('login.attempt') }}" class="font-semibold text-red-600 hover:text-red-700 hover:underline">
-                                    Sudah punya akun?
+                                    Masuk
                                 </a>
                             @else
-                                <span class="font-semibold text-red-600">Sudah punya akun?</span>
+                                <span class="font-semibold text-red-600">Masuk</span>
                             @endif
                         </p>
                     </form>

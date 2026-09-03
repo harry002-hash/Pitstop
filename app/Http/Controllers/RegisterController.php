@@ -9,15 +9,23 @@ use Illuminate\Support\Facades\Auth;
 class RegisterController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Show the registration form.
      */
-    public function __invoke(Request $request)
+    public function create()
+    {
+        return view('register');
+    }
+
+    /**
+     * Handle the registration submission.
+     */
+    public function store(Request $request)
     {
         $userData = $request->validate([
             'name' => ['required', 'string'],
-            'password' => ['required', 'confirmed' ]
+            'password' => ['required', 'confirmed']
         ]);
-        
+
         $userData['password'] = bcrypt($userData['password']);
         $user = User::create($userData);
 

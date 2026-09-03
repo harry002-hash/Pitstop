@@ -129,10 +129,10 @@
                             Sudah punya akun?
                             @if (Route::has('login'))
                                 <a href="{{ route('login.attempt') }}" class="font-semibold text-red-600 hover:text-red-700 hover:underline">
-                                    Sudah punya akun?
+                                    Masuk?
                                 </a>
                             @else
-                                <span class="font-semibold text-red-600">Sudah punya akun?</span>
+                                <span class="font-semibold text-red-600">Masuk</span>
                             @endif
                         </p>
                     </form>

@@ -9,14 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Register Page
-Route::view('register', 'register')->name('register');
-Route::post('register', RegisterController::class)->name('register.store');
 
-Route::middleware('registered')->group(function () {
-    Route::get('/register', [RegisterController::class, 'create'])
-        ->name('register');
-
-    Route::post('/register', [RegisterController::class, 'store']);
-});
+Route::get('/register', [RegisterController::class, 'create'])->name('register');
+Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 

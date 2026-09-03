@@ -15,7 +15,7 @@
 
                 //gambar
                 <img
-                    src="{{ asset('images/motor-hero.png') }}"
+                    src="{{ asset('images/motor.png') }}"
                     alt="Kendaraan"
                     class="absolute inset-0 z-10 w-full h-full object-contain object-center scale-110 pointer-events-none select-none"
                     onerror="this.style.display='none'"

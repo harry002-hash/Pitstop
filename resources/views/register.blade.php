@@ -30,7 +30,6 @@
                     onerror="this.style.display='none'"
                 >
 
-                
                 <div class="absolute inset-0 z-20 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
                 

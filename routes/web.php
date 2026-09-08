@@ -10,7 +10,7 @@ Route::get('/', function () {
 
 //Login Page
 Route::get('login', function(){
-return view('login');
+    return view('login');
 })->name('login');
 
 

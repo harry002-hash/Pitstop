@@ -1,27 +1,44 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    public function create()
     {
-        $creds = $request->validate([
-            'name' => ['required'],
-            'password' => ['required']
+        return view('login');
+    }
+
+    public function store(Request $request)
+    {
+        $credentials = $request->validate([
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
-        if(Auth::attempt($creds)){
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+
+            return redirect()->route('dashboard');
         }
-        return back() ->withErrors([
-            'name' => 'Maaf, nama yang anda gunakan tidak sesuai dengan password.',
-        ])->onlyInput('name');
+
+        return back()
+            ->withErrors([
+                'username' => 'Nama pengguna atau kata sandi yang Anda masukkan salah.',
+            ])
+            ->onlyInput('username');
+    }
+
+    public function destroy(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

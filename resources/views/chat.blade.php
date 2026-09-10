@@ -1,434 +1,136 @@
-{{-- <!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Chat Bengkel</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f3f4f6;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 800px;
-            height: 100vh;
-            margin: auto;
-            background: white;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            padding: 18px 20px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-header h2 {
-            margin: 0 0 5px;
-            font-size: 20px;
-        }
-
-        .chat-header small {
-            color: #777;
-        }
-
-        .logout-button {
-            border: none;
-            background: #dc2626;
-            color: white;
-            padding: 9px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .logout-button:hover {
-            background: #b91c1c;
-        }
-
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .message {
-            display: flex;
-            margin-bottom: 15px;
-        }
-
-        .message.mine {
-            justify-content: flex-end;
-        }
-
-        .message-content {
-            max-width: 70%;
-        }
-
-        .sender {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .mine .sender {
-            text-align: right;
-        }
-
-        .bubble {
-            background: #e5e7eb;
-            padding: 10px 14px;
-            border-radius: 12px;
-            word-wrap: break-word;
-        }
-
-        .mine .bubble {
-            background: #dc2626;
-            color: white;
-        }
-
-        .time {
-            font-size: 10px;
-            color: #999;
-            margin-top: 5px;
-        }
-
-        .mine .time {
-            text-align: right;
-        }
-
-        .message-image {
-            display: block;
-            max-width: 250px;
-            max-height: 250px;
-            margin-top: 8px;
-            border-radius: 8px;
-        }
-
-        .input-container {
-            border-top: 1px solid #ddd;
-            padding: 15px;
-        }
-
-        .image-preview {
-            margin-bottom: 10px;
-        }
-
-        .image-preview img {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 8px;
-        }
-
-        .chat-form {
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-form input[type="text"] {
-            flex: 1;
-            padding: 11px;
-            border: 1px solid #ccc;
-            border-radius: 7px;
-            outline: none;
-        }
-
-        .chat-form input[type="text"]:focus {
-            border-color: #dc2626;
-        }
-
-        .file-button {
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            border: 1px solid #ccc;
-            border-radius: 7px;
-            cursor: pointer;
-            background: white;
-        }
-
-        .file-button:hover {
-            background: #f3f4f6;
-        }
-
-        .send-button {
-            border: none;
-            background: #dc2626;
-            color: white;
-            padding: 0 18px;
-            border-radius: 7px;
-            cursor: pointer;
-        }
-
-        .send-button:hover {
-            background: #b91c1c;
-        }
-
-        .empty-message {
-            text-align: center;
-            color: #999;
-            margin-top: 50px;
-        }
-
-        @media (max-width: 600px) {
-            .message-content {
-                max-width: 85%;
-            }
-
-            .chat-form {
-                gap: 5px;
-            }
-
-            .file-button {
-                padding: 0 10px;
-            }
-
-            .send-button {
-                padding: 0 12px;
-            }
-        }
-    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Chat</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+<body data-auth-id="{{ auth()->id() }}">
 
-<body>
+    <h1>Chat</h1>
+    <p>Logged in as: {{ auth()->user()->username }}</p>
 
-<div class="chat-container">
-
-    <div class="chat-header">
-
-        <div>
-            <h2>Chat Bengkel</h2>
-
-            @auth
-                <small>
-                    Login sebagai: {{ auth()->user()->username }}
-                </small>
-            @endauth
-        </div>
-
-        @auth
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-
-                <button type="submit" class="logout-button">
-                    Logout
-                </button>
-            </form>
-        @endauth
-
-    </div>
-
-    <div class="messages" id="messages">
-
-        @forelse ($messages as $message)
-
-            <div class="message {{ $message->sender_id === auth()->id() ? 'mine' : '' }}">
-
-                <div class="message-content">
-
-                    <div class="sender">
-                        {{ $message->sender->username }}
-                    </div>
-
-                    <div class="bubble">
-
-                        @if ($message->message)
-                            <div>
-                                {{ $message->message }}
-                            </div>
-                        @endif
-
-                        @if ($message->image)
-                            <img
-                                src="{{ asset('storage/' . $message->image) }}"
-                                alt="Gambar"
-                                class="message-image"
-                            >
-                        @endif
-
-                    </div>
-
-                    <div class="time">
-                        {{ $message->created_at->format('H:i') }}
-                    </div>
-
-                </div>
-
-            </div>
-
-        @empty
-
-            <div class="empty-message">
-                Belum ada pesan.
-            </div>
-
-        @endforelse
-
-    </div>
-
-    <div class="input-container">
-
-        <div
-            class="image-preview"
-            id="image-preview"
-            style="display: none;"
-        >
-            <img
-                id="preview-image"
-                src=""
-                alt="Preview"
-            >
-        </div>
-
-        <form
-            id="chat-form"
-            class="chat-form"
-            enctype="multipart/form-data"
-        >
-
+    <nav>
+        <a href="{{ route('dashboard') }}">Dashboard</a>
+        <form method="POST" action="{{ route('logout') }}" style="display:inline">
             @csrf
-
-            <label class="file-button">
-                📷
-
-                <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/*"
-                    hidden
-                >
-            </label>
-
-            <input
-                type="text"
-                id="message"
-                name="message"
-                placeholder="Tulis pesan..."
-                autocomplete="off"
-            >
-
-            <button
-                type="submit"
-                class="send-button"
-            >
-                Kirim
-            </button>
-
+            <button type="submit">Logout</button>
         </form>
+    </nav>
 
-    </div>
+    <hr>
 
-</div>
+    {{-- Messages (server-rendered, oldest first) --}}
+    <ul id="messages">
+        @forelse ($messages as $message)
+            <li data-id="{{ $message->id }}">
+                <strong>{{ $message->sender->username }}</strong>:
+                {{ $message->message }}
+                <small>{{ $message->created_at->format('H:i') }}</small>
+            </li>
+        @empty
+            <li id="empty-message">No messages yet.</li>
+        @endforelse
+    </ul>
 
-<script>
+    <hr>
 
-const form = document.getElementById('chat-form');
-const messageInput = document.getElementById('message');
-const imageInput = document.getElementById('image');
+    {{-- Send form: POST route('chat.send') via fetch --}}
+    <form id="chat-form" method="POST" action="{{ route('chat.send') }}">
+        @csrf
 
-const preview = document.getElementById('image-preview');
-const previewImage = document.getElementById('preview-image');
+        <label for="receiver_id">To:</label>
+        <select id="receiver_id" name="receiver_id" required>
+            <option value="">-- select user --</option>
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}">{{ $user->username }}</option>
+            @endforeach
+        </select>
 
-const messages = document.getElementById('messages');
+        <input
+            type="text"
+            id="message"
+            name="message"
+            placeholder="Type a message..."
+            autocomplete="off"
+            required
+            maxlength="1000"
+        >
 
-imageInput.addEventListener('change', function () {
+        <button type="submit">Send</button>
+    </form>
 
-    const file = this.files[0];
+    <script>
+        const authId = Number(document.body.dataset.authId);
+        const list = document.getElementById('messages');
+        const form = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message');
+        const receiverSelect = document.getElementById('receiver_id');
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-    if (!file) {
-        preview.style.display = 'none';
-        previewImage.src = '';
+        function appendMessage(data) {
+            document.getElementById('empty-message')?.remove();
 
-        return;
-    }
+            const li = document.createElement('li');
+            const mine = Number(data.sender_id) === authId ? ' (you)' : '';
+            const time = data.created_at ? new Date(data.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-        previewImage.src = event.target.result;
-        preview.style.display = 'block';
-    };
-
-    reader.readAsDataURL(file);
-});
-
-form.addEventListener('submit', async function (event) {
-
-    event.preventDefault();
-
-    const message = messageInput.value.trim();
-    const image = imageInput.files[0];
-
-    if (!message && !image) {
-        return;
-    }
-
-    const formData = new FormData();
-
-    formData.append('message', message);
-
-    if (image) {
-        formData.append('image', image);
-    }
-
-    try {
-
-        const response = await fetch(
-            "{{ route('chat.send') }}",
-            {
-                method: 'POST',
-
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                },
-
-                body: formData
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            console.error(data);
-            alert('Pesan gagal dikirim.');
-
-            return;
+            li.textContent = `${data.sender ?? 'User'}${mine}: ${data.message} ${time}`;
+            list.appendChild(li);
         }
 
-        messageInput.value = '';
-        imageInput.value = '';
+        // Realtime: listen on public `chat` channel, event `.message.sent`.
+        // app.js (Echo) must be loaded via @vite above, and `php artisan reverb:start` running.
+        window.addEventListener('load', () => {
+            if (!window.Echo) {
+                console.warn('Echo not loaded. Run: npm run dev (or build) + php artisan reverb:start');
+                return;
+            }
+            window.Echo.channel('chat').listen('.message.sent', appendMessage);
+        });
 
-        preview.style.display = 'none';
-        previewImage.src = '';
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        location.reload();
+            const res = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrf,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    // Required for broadcast(...)->toOthers() so the sender
+                    // doesn't receive its own event back.
+                    ...(window.Echo?.socketId()
+                        ? { 'X-Socket-ID': window.Echo.socketId() }
+                        : {}),
+                },
+                body: JSON.stringify({
+                    receiver_id: Number(receiverSelect.value),
+                    message: messageInput.value.trim(),
+                }),
+            });
 
-    } catch (error) {
+            const data = await res.json().catch(() => ({}));
 
-        console.error(error);
+            if (!res.ok) {
+                console.error(data);
+                alert(data.message ?? 'Failed to send message.');
+                return;
+            }
 
-        alert('Terjadi kesalahan.');
+            // Sender renders its own message instantly (toOthers excludes it from broadcast).
+            appendMessage({
+                sender_id: authId,
+                sender: 'You',
+                message: messageInput.value.trim(),
+                created_at: new Date().toISOString(),
+            });
 
-    }
-
-});
-
-messages.scrollTop = messages.scrollHeight;
-
-</script>
+            messageInput.value = '';
+        });
+    </script>
 
 </body>
-</html> --}}
+</html>

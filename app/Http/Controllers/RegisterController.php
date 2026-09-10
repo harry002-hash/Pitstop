@@ -28,6 +28,10 @@ class RegisterController extends Controller
 
         $userData['password'] = bcrypt($userData['password']);
         $user = User::create($userData);
+        $user = new User();
+        $user->name = $userData['name'];
+        $user->password = $userData['password'];
+        $user->save();
 
         Auth::login($user);
 

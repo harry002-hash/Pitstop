@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\VehicleClaimController;
+use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,22 +28,51 @@ Route::post('/register', [RegisterController::class, 'store'])
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-    Route::get('/chat', [ChatController::class, 'index'])
-        ->name('chat');
+    Route::post('/logout', [LoginController::class, 'destroy'])
+        ->name('logout');
 
-    Route::post('/chat/send', [ChatController::class, 'send'])
-        ->name('chat.send');
+    // Customer mengklaim motor (isi KB + password dari bengkel).
+    Route::get('/claim', [VehicleClaimController::class, 'create'])
+        ->name('vehicle.claim');
 
-    Route::post('/logout', function () {
-        Auth::logout();
+    Route::post('/claim', [VehicleClaimController::class, 'store'])
+        ->name('vehicle.claim.store');
 
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+    // Customer yang sudah klaim + owner.
+    Route::middleware('claimed')->group(function () {
 
-        return redirect()->route('login');
-    })->name('logout');
+        Route::get('/customer', [CustomerDashboardController::class, 'index'])
+            ->name('customer.dashboard');
+
+        Route::get('/customer/status', [CustomerDashboardController::class, 'status'])
+            ->name('customer.status');
+
+        Route::get('/chat', [ChatController::class, 'index'])
+            ->name('chat');
+
+        Route::post('/chat/send', [ChatController::class, 'send'])
+            ->name('chat.send');
+    });
+
+    // Khusus pemilik bengkel (Ajung).
+    Route::middleware('owner')->prefix('owner')->name('owner.')->group(function () {
+
+        Route::get('/vehicles', [VehicleController::class, 'index'])
+            ->name('vehicles.index');
+
+        Route::get('/vehicles/create', [VehicleController::class, 'create'])
+            ->name('vehicles.create');
+
+        Route::post('/vehicles', [VehicleController::class, 'store'])
+            ->name('vehicles.store');
+
+        Route::get('/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
+            ->name('vehicles.edit');
+
+        Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update'])
+            ->name('vehicles.update');
+    });
 });

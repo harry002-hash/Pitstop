@@ -11,10 +11,10 @@ class KendaraanController extends Controller
     {
         $kendaraan = [
             'id'             => $id,
-            'plat_kendaraan'  => 'KB 8123 XG',
-            'nama_pemilik'    => 'Budi Heremanto',
-            'jenis_kendaraan' => 'Motor',
-            'nama_kendaraan'  => 'Vario 125 Gen 1',
+            'license_plate'  => 'KB 8123 XG',
+            'owner_name'    => 'Budi Heremanto',
+            'vehicle_type' => 'Motor',
+            'vehicle_name'  => 'Vario 125 Gen 1',
             'status'          => 'Dikerjakan',
         ];
 
@@ -25,10 +25,10 @@ class KendaraanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'plat_kendaraan'  => 'required|string|max:20',
-            'nama_pemilik'    => 'required|string|max:255',
-            'jenis_kendaraan' => 'required|string|max:100',
-            'nama_kendaraan'  => 'required|string|max:100',
+            'license_plate'  => 'required|string|max:20',
+            'owner_name'    => 'required|string|max:255',
+            'vehicle_type' => 'required|string|max:100',
+            'vehicle_name'  => 'required|string|max:100',
             'status'          => 'required|string',
         ]);
 

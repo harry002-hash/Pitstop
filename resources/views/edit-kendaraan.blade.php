@@ -43,12 +43,12 @@
                     
                     <!-- Plat Kendaraan -->
                     <div class="flex flex-col">
-                        <label for="plat_kendaraan" class="text-black font-semibold text-sm mb-1.5">Plat Kendaraan</label>
+                        <label for="license_plate" class="text-black font-semibold text-sm mb-1.5">Plat Kendaraan</label>
                         <input 
                             type="text" 
-                            id="plat_kendaraan"
-                            name="plat_kendaraan"
-                            value="{{ old('plat_kendaraan', $kendaraan['plat_kendaraan'] ?? 'KB 8123 XG') }}" 
+                            id="license_plate"
+                            name="license_plate"
+                            value="{{ old('license_plate', $kendaraan['license_plate'] ?? 'KB 8123 XG') }}" 
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -56,12 +56,12 @@
 
                     <!-- Nama Pemilik -->
                     <div class="flex flex-col">
-                        <label for="nama_pemilik" class="text-black font-semibold text-sm mb-1.5">Nama Pemilik</label>
+                        <label for="owner_name" class="text-black font-semibold text-sm mb-1.5">Nama Pemilik</label>
                         <input 
                             type="text" 
-                            id="nama_pemilik"
-                            name="nama_pemilik"
-                            value="{{ old('nama_pemilik', $kendaraan['nama_pemilik'] ?? 'Budi Heremanto') }}" 
+                            id="owner_name"
+                            name="owner_name"
+                            value="{{ old('owner_name', $kendaraan['owner_name'] ?? 'Budi Heremanto') }}" 
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -69,12 +69,12 @@
 
                     <!-- Jenis Kendaraan -->
                     <div class="flex flex-col">
-                        <label for="jenis_kendaraan" class="text-black font-semibold text-sm mb-1.5">Jenis Kendaraan</label>
+                        <label for="vehicle_type" class="text-black font-semibold text-sm mb-1.5">Jenis Kendaraan</label>
                         <input 
                             type="text" 
-                            id="jenis_kendaraan"
-                            name="jenis_kendaraan"
-                            value="{{ old('jenis_kendaraan', $kendaraan['jenis_kendaraan'] ?? 'Motor') }}" 
+                            id="vehicle_type"
+                            name="vehicle_type"
+                            value="{{ old('vehicle_type', $kendaraan['vehicle_type'] ?? 'Motor') }}" 
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -82,12 +82,12 @@
 
                     <!-- Nama Kendaraan -->
                     <div class="flex flex-col">
-                        <label for="nama_kendaraan" class="text-black font-semibold text-sm mb-1.5">Nama Kendaraan</label>
+                        <label for="vehicle_name" class="text-black font-semibold text-sm mb-1.5">Nama Kendaraan</label>
                         <input 
                             type="text" 
-                            id="nama_kendaraan"
-                            name="nama_kendaraan"
-                            value="{{ old('nama_kendaraan', $kendaraan['nama_kendaraan'] ?? 'Vario 125 Gen 1') }}" 
+                            id="vehicle_name"
+                            name="vehicle_name"
+                            value="{{ old('vehicle_name', $kendaraan['vehicle_name'] ?? 'Vario 125 Gen 1') }}" 
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />

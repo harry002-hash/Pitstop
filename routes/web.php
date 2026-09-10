@@ -1,6 +1,6 @@
 <?php
 
-<<<<<<< HEAD
+
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\DashboardController;
@@ -88,10 +88,10 @@ Route::middleware('auth')->group(function () {
             ->name('vehicles.update');
     });
 
-=======
+
 use App\Http\Controllers\KendaraanController;
 
 // Menggunakan format RESTful dengan ID kendaraan
 Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('vehicle.edit');
 Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('vehicle.update');
->>>>>>> 3bfdad1204476603080c14ddb50abc11acc2138e
+

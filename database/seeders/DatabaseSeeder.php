@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,11 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::create([
-            'name' => 'qwra',
-            'password' => Hash::make('hai'),
-        ]);
+        // Akun pemilik bengkel (Ajung). Password:AJUNG ganti setelah login pertama.
+        User::firstOrCreate(
+            ['username' => 'ajung'],
+            ['password' => 'bengkel123', 'role' => 'owner'],
+        );
     }
 }

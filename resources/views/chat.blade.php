@@ -82,7 +82,7 @@
         }
 
         // Realtime: listen on public `chat` channel, event `.message.sent`.
-        // app.js (Echo) must be loaded via @vite above, and `php artisan reverb:start` running.
+        // app.js (Echo) must be loaded via vite above, and `php artisan reverb:start` running.
         window.addEventListener('load', () => {
             if (!window.Echo) {
                 console.warn('Echo not loaded. Run: npm run dev (or build) + php artisan reverb:start');

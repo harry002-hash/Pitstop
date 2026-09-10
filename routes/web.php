@@ -42,3 +42,5 @@ Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
 
 Route::view('register', 'register')->name('register');
 Route::post('register', RegisterController::class)->name('register.store');
+
+   Route::get('/user/dashboard', fn () => view('user.dashboard'));

@@ -1,14 +1,15 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\CustomerDashboardController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\VehicleClaimController;
 use App\Http\Controllers\VehicleController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,8 +20,6 @@ Route::get('login', function(){
 return view('login');
 })->name('login');
 
-
-
 Route::post('login', LoginController::class)->name('login.attempt');
 
 Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
@@ -28,6 +27,7 @@ Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
 
 //Register Page
 Route::view('register', 'register')->name('register');
+
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
@@ -89,9 +89,12 @@ Route::middleware('auth')->group(function () {
     });
 
 
-use App\Http\Controllers\KendaraanController;
-
 // Menggunakan format RESTful dengan ID kendaraan
 Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('vehicle.edit');
 Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('vehicle.update');
+
+
+Route::post('register', RegisterController::class)->name('register.store');
+
+   Route::get('/user/dashboard', fn () => view('user.dashboard'));
 

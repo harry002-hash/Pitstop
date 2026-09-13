@@ -15,3 +15,8 @@ Broadcast::channel('support.{customerId}', function ($user, $customerId) {
 
     return $user->isAdmin() || $user->isOwner();
 });
+
+// Notif khusus staff (admin/owner). Customer ditolak.
+Broadcast::channel('staff.alerts', function ($user) {
+    return $user->isAdmin() || $user->isOwner();
+});

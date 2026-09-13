@@ -2,36 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class KendaraanController extends Controller
 {
-    // Method menampilkan form edit (menerima $id dari route /vehicles/{id}/edit)
-    public function edit($id)
+    // Form ubah data motor milik customer yang sedang login.
+    public function edit(): View
     {
-        $kendaraan = [
-            'id' => $id,
-            'license_plate' => 'KB 8123 XG',
-            'owner_name' => 'Budi Heremanto',
-            'vehicle_type' => 'Motor',
-            'vehicle_name' => 'Vario 125 Gen 1',
-            'status' => 'Dikerjakan',
-        ];
+        $vehicle = auth()->user()->vehicles()->latest()->firstOrFail();
 
-        return view('edit-kendaraan', compact('kendaraan'));
+        return view('edit-kendaraan', compact('vehicle'));
     }
 
-    // Method proses simpan update (menerima $request dan $id)
-    public function update(Request $request, $id)
+    // Simpan perubahan. Customer hanya boleh ubah plat + nama motor;
+    // status tetap wewenang bengkel.
+    public function update(Request $request): RedirectResponse
     {
-        $request->validate([
-            'license_plate' => 'required|string|max:20',
-            'owner_name' => 'required|string|max:255',
-            'vehicle_type' => 'required|string|max:100',
-            'vehicle_name' => 'required|string|max:100',
-            'status' => 'required|string',
+        $vehicle = auth()->user()->vehicles()->latest()->firstOrFail();
+
+        $validated = $request->validate([
+            'plate_number' => ['required', 'string', 'max:20', Rule::unique('vehicles')->ignore($vehicle->id)],
+            'vehicle_name' => ['required', 'string', 'max:100'],
         ]);
 
-        return redirect()->back()->with('success', 'Data kendaraan berhasil diperbarui!');
+        $vehicle->update($validated);
+
+        return redirect()->route('customer.dashboard')->with('status', 'Data kendaraan berhasil diperbarui!');
     }
 }

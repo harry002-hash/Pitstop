@@ -11,7 +11,7 @@ use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // Login Page
@@ -48,6 +48,16 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/customer/status', [CustomerDashboardController::class, 'status'])
             ->name('customer.status');
+
+        Route::get('/customer/notifications', [CustomerDashboardController::class, 'notifications'])
+            ->name('customer.notifications');
+
+        // Customer ubah data motornya sendiri.
+        Route::get('/customer/vehicle/edit', [KendaraanController::class, 'edit'])
+            ->name('customer.vehicle.edit');
+
+        Route::put('/customer/vehicle', [KendaraanController::class, 'update'])
+            ->name('customer.vehicle.update');
     });
 
     // Khusus pemilik bengkel (Ajung) + admin.
@@ -56,25 +66,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [VehicleController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/notifications', [VehicleController::class, 'notifications'])
+            ->name('notifications');
+
         Route::get('/vehicles', [VehicleController::class, 'index'])
             ->name('vehicles.index');
-
-        Route::get('/vehicles/create', [VehicleController::class, 'create'])
-            ->name('vehicles.create');
 
         Route::post('/vehicles', [VehicleController::class, 'store'])
             ->name('vehicles.store');
 
-        Route::get('/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
-            ->name('vehicles.edit');
-
         Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update'])
             ->name('vehicles.update');
+
+        Route::post('/vehicles/{vehicle}/remind', [VehicleController::class, 'remind'])
+            ->name('vehicles.remind');
     });
 
-    // Menggunakan format RESTful dengan ID kendaraan
-    Route::middleware('owner')->group(function () {
-        Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('vehicle.edit');
-        Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('vehicle.update');
-    });
 });

@@ -77,7 +77,7 @@
                                         <circle cx="12" cy="7" r="4" />
                                     </svg>
                                 </span>
-                                <input type="text" name="name" placeholder="Masukkan Nama Pengguna; Contoh (Budi Herlambang)" required class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-red-500 focus:ring-2 focus:ring-red-500/30 focus:outline-none transition">
+                                <input type="text" name="username" placeholder="Masukkan Nama Pengguna; Contoh (Budi Herlambang)" required class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-red-500 focus:ring-2 focus:ring-red-500/30 focus:outline-none transition">
                             </div>
                             @error('username')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>

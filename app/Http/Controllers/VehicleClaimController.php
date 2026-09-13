@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StaffAlert;
 use App\Http\Requests\ClaimVehicleRequest;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
@@ -40,6 +41,13 @@ class VehicleClaimController extends Controller
         }
 
         $vehicle->update(['user_id' => auth()->id()]);
+
+        broadcast(new StaffAlert(
+            type: 'claim',
+            title: 'Klaim baru: '.$vehicle->plate_number,
+            body: 'Diklaim oleh '.auth()->user()->username,
+            url: route('owner.vehicles.index'),
+        ))->toOthers();
 
         return redirect()->route('customer.dashboard')->with('status', 'Motor berhasil ditautkan.');
     }

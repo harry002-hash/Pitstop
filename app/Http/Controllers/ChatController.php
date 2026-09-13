@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Events\StaffAlert;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
@@ -49,8 +51,10 @@ class ChatController extends Controller
                 : collect();
 
             $threadCustomerId = $peer?->id;
+            $vehicle = $peer?->vehicles()->latest()->first();
+            $headerOwner = $peer?->username;
 
-            return view('chat', compact('messages', 'customers', 'peer', 'isStaff', 'threadCustomerId'));
+            return view('chat', compact('messages', 'customers', 'peer', 'isStaff', 'threadCustomerId', 'vehicle', 'headerOwner'));
         }
 
         // Customer: hanya thread miliknya sendiri. Tidak bisa intip customer lain.
@@ -77,8 +81,10 @@ class ChatController extends Controller
 
         $customers = collect();
         $threadCustomerId = $user->id;
+        $vehicle = $user->vehicles()->latest()->first();
+        $headerOwner = $user->username;
 
-        return view('chat', compact('messages', 'customers', 'peer', 'isStaff', 'threadCustomerId'));
+        return view('chat', compact('messages', 'customers', 'peer', 'isStaff', 'threadCustomerId', 'vehicle', 'headerOwner'));
     }
 
     public function send(Request $request)
@@ -146,6 +152,17 @@ class ChatController extends Controller
         $message->load('sender:id,username');
         $customerId = $isStaff ? (int) $receiverId : (int) $user->id;
         broadcast(new MessageSent($message, $customerId))->toOthers();
+
+        // Kabarin semua staff kalau ada chat masuk dari customer.
+        if (! $isStaff) {
+            broadcast(new StaffAlert(
+                type: 'chat',
+                title: 'Chat baru dari '.$user->username,
+                body: $message->message !== '' ? Str::limit($message->message, 80) : 'Mengirim gambar',
+                url: route('chat', ['u' => $user->id]),
+                customerId: (int) $user->id,
+            ))->toOthers();
+        }
 
         return response()->json([
             'success' => true,

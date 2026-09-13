@@ -21,17 +21,28 @@
     data-is-staff="{{ ($isStaff ?? false) ? '1' : '0' }}"
     data-peer-id="{{ $peer?->id ?? '' }}">
 
-    <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div class="flex min-h-screen flex-col">
+        <div class="flex flex-1 flex-col md:flex-row">
+
+            <x-app-sidebar>
+                <x-slot:nav>
+                    <x-sidebar-link :href="route('dashboard')" :active="false">Dashboard</x-sidebar-link>
+                    <x-sidebar-link :href="route('chat')" :active="true">Chat</x-sidebar-link>
+                </x-slot:nav>
+            </x-app-sidebar>
+
+            <div class="min-w-0 flex-1 px-4 py-6 sm:px-6">
+                <div class="mx-auto max-w-3xl">
 
         {{-- Vehicle / customer header --}}
-        <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
-            {{ $vehicle->plate_number ?? 'KB 8123 XG' }}
+        <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
+            {{ $vehicle->plate_number ?? 'Belum ada kendaraan' }}
         </h1>
-        <p class="mt-2 text-lg font-bold text-gray-900 sm:text-2xl">
-            {{ $vehicle->owner_name ?? 'Budi Hermanto' }}, {{ $vehic    e->model ?? 'Vario 125 Gen 1' }}, {{ $vehicle->type ?? 'Motor' }}
+        <p class="mt-1 text-sm font-bold text-gray-900 sm:text-base">
+            {{ $headerOwner ?? auth()->user()->username }}, {{ $vehicle->vehicle_name ?? '—' }}, Motor
         </p>
 
-        <div class="mt-8 flex gap-3">
+        <div class="mt-5 flex gap-3">
 
             {{-- decorative accent bar --}}
             <div class="hidden w-8 shrink-0 overflow-hidden rounded-2xl sm:flex">
@@ -76,7 +87,7 @@
                         </h2>
                     </div>
 
-                    <div id="messages" class="h-[420px] scroll-smooth space-y-5 overflow-y-auto bg-gray-50 px-4 py-6 sm:px-6">
+                    <div id="messages" class="h-[360px] scroll-smooth space-y-4 overflow-y-auto bg-gray-50 px-3 py-4 sm:px-5">
                         @forelse ($messages as $message)
                             @php $isMine = $message->sender_id === auth()->id(); @endphp
                             <div class="flex items-end gap-3 {{ $isMine ? 'flex-row-reverse' : '' }}" data-message-id="{{ $message->id }}">
@@ -141,23 +152,18 @@
 
                 {{-- Actions --}}
                 <div class="mt-6 flex justify-end gap-4">
-                    <button type="button" id="cancel-btn" class="rounded-lg bg-red-500 px-10 py-3 font-bold text-white shadow transition hover:bg-red-600">
-                        Batal
-                    </button>
                     <button type="submit" form="chat-form" id="send-btn" class="rounded-lg bg-green-500 px-10 py-3 font-bold text-white shadow transition hover:bg-green-600 disabled:opacity-50">
                         Kirim
                     </button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <footer class="mt-16 bg-red-950 py-6 text-red-100">
-        <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-6 text-sm sm:flex-row">
-            <p>&copy; PitStop. All Rights Reserved.</p>
-            <p class="text-red-300">V1.0 | Bantuan | Kebijakan Privasi</p>
+                </div>
+            </div>
         </div>
-    </footer>
+
+        <x-app-footer />
+    </div>
 
     <script>
         (() => {
@@ -176,7 +182,6 @@
             const previewWrap = document.getElementById('image-preview-wrap');
             const previewImg = document.getElementById('image-preview');
             const removeImageBtn = document.getElementById('remove-image');
-            const cancelBtn = document.getElementById('cancel-btn');
             const sendBtn = document.getElementById('send-btn');
             const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -215,8 +220,6 @@
                 previewImg.src = '';
                 previewWrap.classList.add('hidden');
             });
-
-            cancelBtn.addEventListener('click', resetDraft);
 
             function bubble({ sender, senderId, message, imageUrl }) {
                 const mine = Number(senderId) === authId;

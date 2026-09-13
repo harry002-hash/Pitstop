@@ -8,7 +8,7 @@ class DashboardController extends Controller
 {
     public function index(): RedirectResponse
     {
-        if (auth()->user()->isOwner()) {
+        if (auth()->user()->isAdmin() || auth()->user()->isOwner()) {
             return redirect()->route('owner.vehicles.index');
         }
 

@@ -1,66 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Chat</title>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body data-auth-id="{{ auth()->id() }}">
+
+<body>
 
     <h1>Chat</h1>
-    <p>Logged in as: {{ auth()->user()->username }}</p>
 
-    <nav>
-        <a href="{{ route('dashboard') }}">Dashboard</a>
-        <form method="POST" action="{{ route('logout') }}" style="display:inline">
-            @csrf
-            <button type="submit">Logout</button>
-        </form>
-    </nav>
-
-    <hr>
-
-    {{-- Messages (server-rendered, oldest first) --}}
-    <ul id="messages">
-        @forelse ($messages as $message)
-            <li data-id="{{ $message->id }}">
-                <strong>{{ $message->sender->username }}</strong>:
+    <div id="messages">
+        @foreach ($messages as $message)
+            <div>
+                <b>{{ $message->sender->username }}</b>:
                 {{ $message->message }}
-                <small>{{ $message->created_at->format('H:i') }}</small>
-            </li>
-        @empty
-            <li id="empty-message">No messages yet.</li>
-        @endforelse
-    </ul>
+            </div>
+        @endforeach
+    </div>
 
-    <hr>
+    <form id="chat-form">
 
-    {{-- Send form: POST route('chat.send') via fetch --}}
-    <form id="chat-form" method="POST" action="{{ route('chat.send') }}">
-        @csrf
-
-        <label for="receiver_id">To:</label>
-        <select id="receiver_id" name="receiver_id" required>
-            <option value="">-- select user --</option>
-            @foreach ($users as $user)
-                <option value="{{ $user->id }}">{{ $user->username }}</option>
-            @endforeach
-        </select>
+        <input
+            type="number"
+            id="receiver_id"
+            placeholder="Receiver ID"
+            required
+        >
 
         <input
             type="text"
             id="message"
-            name="message"
-            placeholder="Type a message..."
-            autocomplete="off"
+            placeholder="Message"
             required
-            maxlength="1000"
         >
 
-        <button type="submit">Send</button>
+        <button type="submit">
+            Send
+        </button>
+
     </form>
+
 
     <script>
         const authId = Number(document.body.dataset.authId);
@@ -131,6 +111,7 @@
             messageInput.value = '';
         });
     </script>
+
 
 </body>
 </html>

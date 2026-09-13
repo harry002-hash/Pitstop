@@ -3,45 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
-use App\Http\Requests\SendMessageRequest;
 use App\Models\Message;
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        $messages = Message::with('sender:id,username')
-            ->oldest()
-            ->take(100)
-            ->get();
+        $messages = Message::with('sender')->latest()->get()->reverse();
 
-        $users = User::query()
-            ->where('id', '!=', auth()->id())
-            ->select(['id', 'username'])
-            ->orderBy('username')
-            ->get();
-
-        return view('chat', compact('messages', 'users'));
+        return view('chat', compact('messages'));
     }
 
-    public function send(SendMessageRequest $request): JsonResponse
+    public function send(Request $request)
     {
-        $message = Message::create([
-            'sender_id' => auth()->id(),
-            'receiver_id' => $request->validated('receiver_id'),
-            'message' => $request->validated('message'),
+        $request->validate([
+            'receiver_id' => ['required', 'exists:users,id'],
+            'message' => ['required', 'string','max:1000'],
         ]);
 
-        $message->load('sender:id,username');
+        $message = Message::create([
+            'sender_id' => auth()->id(),
+            'receiver_id' => $request->receiver_id,
+            'message' => $request->message,
+        ]);
 
+        $message->load('sender');
         broadcast(new MessageSent($message))->toOthers();
 
         return response()->json([
             'success' => true,
             'message' => $message,
-        ], 201);
+        ]);
     }
 }

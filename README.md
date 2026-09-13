@@ -1,5 +1,7 @@
 <div align="center">
 
+![image](public\images\logo.png)
+
 # PitStop — Sistem Informasi Bengkel
 
 Aplikasi web manajemen bengkel: admin/owner mendaftarkan motor (plat + password),

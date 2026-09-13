@@ -3,129 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Detail Kendaraan - Portal Servis PitStop</title>
+<title>PitStop — Detail Kendaraan</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
-          pitred: {
-            DEFAULT: '#E4241B',
-            dark: '#7A0E14',
-            darker: '#4A0C10',
+          brand: {
+            DEFAULT: '#A31E1E',
+            dark: '#7A1414',
+            bright: '#DC2626',
+            gold: '#C9A227',
           },
-          gold: '#E7D127',
-          chatblue: '#2761E7',
         },
         fontFamily: {
-          sans: ['Arial', 'Helvetica', 'sans-serif'],
-        }
-      }
-    }
-  }
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
 </script>
 </head>
-<body class="min-h-screen bg-white flex flex-col md:flex-row">
+<body class="bg-white font-sans text-gray-900 antialiased">
 
-  <!-- Sidebar -->
-  <aside class="md:w-[260px] w-full bg-pitred flex md:flex-col flex-row items-center md:items-stretch justify-between md:justify-start px-6 md:px-0 py-4 md:py-8">
+<div class="flex min-h-screen flex-col">
+  <div class="flex flex-1 flex-col md:flex-row">
 
-    <!-- Logo: now a single image so it can be swapped without touching any code -->
-    <div class="flex md:flex-col items-center md:items-start md:ml-6">
-      <!-- Replace src with your own logo file, e.g. src="assets/logo-pitstop.png" -->
-      <img
-        src="images/logo-pitstop.png"
-        alt="Logo PitStop"
-        class="h-[64px] md:h-[70px] w-auto object-contain"
-      >
-    </div>
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="flex w-full shrink-0 flex-col items-start gap-8 bg-brand px-6 py-6 md:w-64 md:items-stretch md:justify-between md:gap-0 md:px-9 md:py-10">
 
-    <!-- Social icons (desktop: pushed toward bottom) -->
-    <div class="hidden md:flex flex-col mt-auto mb-6 ml-6 gap-3">
-      <div class="flex gap-3">
-        <!-- Replace each src below with your own icon file (instagram.png, facebook.png, youtube.png) -->
-        <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full overflow-hidden block">
-          <img src="images/instagram.png" alt="Instagram" class="w-full h-full object-cover">
-        </a>
-        <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full overflow-hidden block">
-          <img src="images/fb.png" alt="Facebook" class="w-full h-full object-cover">
-        </a>
-        <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-full overflow-hidden block">
-          <img src="images/yt.png" alt="YouTube" class="w-full h-full object-cover">
-        </a>
+      <!-- Logo -->
+      <div class="w-32 rounded-2xl bg-white p-4 shadow-sm md:w-full">
+        <!-- REPLACE: logo — swap this src for your own exported logo file -->
+        <img
+          src="images/logo.png"
+          alt="Logo PitStop"
+          class="h-auto w-full object-contain"
+        >
       </div>
-    </div>
 
-    <!-- Keluar button -->
-    <button type="button" class="bg-white text-pitred font-semibold text-sm px-5 py-2.5 rounded-full flex items-center gap-2 md:mx-6 md:mb-2 shadow-sm">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
-      Keluar
-    </button>
-  </aside>
+      <!-- nav space intentionally left empty to match the source screenshot -->
+      <div class="hidden flex-1 md:block"></div>
 
-  <!-- Main content -->
-  <main class="flex-1 flex flex-col">
-    <div class="flex-1 px-5 sm:px-10 md:px-16 py-10 md:py-14">
-      <div class="max-w-4xl">
+      <!-- Social icons + logout -->
+      <div class="flex w-full flex-col gap-6">
+        <div class="flex items-center gap-3">
+          <!-- REPLACE: social icon — Instagram -->
+          <a href="#" class="block h-10 w-10 overflow-hidden rounded-full ring-2 ring-white/30 transition hover:ring-white focus-visible:outline-none focus-visible:ring-white">
+            <img src="images/instagram.png" alt="Instagram" class="h-full w-full object-cover">
+          </a>
+          <!-- REPLACE: social icon — Facebook -->
+          <a href="#" class="block h-10 w-10 overflow-hidden rounded-full ring-2 ring-white/30 transition hover:ring-white focus-visible:outline-none focus-visible:ring-white">
+            <img src="images/fb.png" alt="Facebook" class="h-full w-full object-cover">
+          </a>
+          <!-- REPLACE: social icon — YouTube -->
+          <a href="#" class="block h-10 w-10 overflow-hidden rounded-full ring-2 ring-white/30 transition hover:ring-white focus-visible:outline-none focus-visible:ring-white">
+            <img src="images/yt.png" alt="YouTube" class="h-full w-full object-cover">
+          </a>
+        </div>
 
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">KB 8123 XG</h1>
-        <p class="text-gray-800 text-sm sm:text-base md:text-lg mt-1 mb-8 md:mb-10">Budi Hermanto, Vario 125 Gen 1, Motor</p>
+        <button type="button" class="flex w-fit items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-brand shadow-sm transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:px-6 md:py-3 md:text-base">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Keluar
+        </button>
+      </div>
+    </aside>
 
-        <!-- Card -->
-        <div class="relative bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-          <!-- vertical accent stripe -->
-          <div class="absolute inset-y-0 left-0 w-[60px] bg-gradient-to-b from-pitred via-pitred-dark to-pitred-darker"></div>
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="flex-1 px-6 py-10 sm:px-10 md:px-16 md:py-14">
+      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">KB 8123 XG</h1>
+      <p class="mt-2 text-base font-semibold text-gray-700 sm:text-lg">Budi Hermanto, Vario 125 Gen 1, Motor</p>
 
-          <div class="pl-20 sm:pl-24 pr-6 sm:pr-10 md:pr-14 py-8 md:py-10">
+      <!-- Card -->
+      <div class="mt-10 flex w-full overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-lg shadow-gray-200/60">
 
-            <div class="mb-6">
-              <h2 class="font-bold text-gray-900 text-lg sm:text-xl mb-2">Plat Kendaraan</h2>
-              <div class="bg-gray-100 rounded-lg px-4 py-3 text-gray-500 text-sm sm:text-base">KB 8123 XG</div>
+        <!-- decorative accent stripe -->
+        <div class="flex w-6 shrink-0 sm:w-8">
+          <div class="w-1/2 bg-brand-bright"></div>
+          <div class="w-1/2 bg-brand-dark"></div>
+        </div>
+
+        <div class="flex-1 p-6 sm:p-8 md:p-10">
+          <!-- Proportional field list: one grid, one row height, one gap value for every field -->
+          <div class="grid grid-cols-1 gap-6">
+
+            <div>
+              <p class="mb-2 font-bold text-gray-900">Plat Kendaraan</p>
+              <div class="w-full rounded-lg bg-gray-100 px-4 py-3 text-gray-600">KB 8123 XG</div>
             </div>
 
-            <div class="mb-6">
-              <h2 class="font-bold text-gray-900 text-lg sm:text-xl mb-2">Nama Pemilik</h2>
-              <div class="bg-gray-100 rounded-lg px-4 py-3 text-gray-500 text-sm sm:text-base">Budi Heremanto</div>
+            <div>
+              <p class="mb-2 font-bold text-gray-900">Nama Pemilik</p>
+              <div class="w-full rounded-lg bg-gray-100 px-4 py-3 text-gray-600">Budi Heremanto</div>
             </div>
 
-            <div class="mb-6">
-              <h2 class="font-bold text-gray-900 text-lg sm:text-xl mb-2">Jenis Kendaraan</h2>
-              <div class="bg-gray-100 rounded-lg px-4 py-3 text-gray-500 text-sm sm:text-base">Motor</div>
+            <div>
+              <p class="mb-2 font-bold text-gray-900">Jenis Kendaraan</p>
+              <div class="w-full rounded-lg bg-gray-100 px-4 py-3 text-gray-600">Motor</div>
             </div>
 
-            <div class="mb-6">
-              <h2 class="font-bold text-gray-900 text-lg sm:text-xl mb-2">Nama Kendaraan</h2>
-              <div class="bg-gray-100 rounded-lg px-4 py-3 text-gray-500 text-sm sm:text-base">Vario 125 Gen 1</div>
+            <div>
+              <p class="mb-2 font-bold text-gray-900">Nama Kendaraan</p>
+              <div class="w-full rounded-lg bg-gray-100 px-4 py-3 text-gray-600">Vario 125 Gen 1</div>
             </div>
 
-            <div class="mb-2">
-              <h2 class="font-bold text-gray-900 text-lg sm:text-xl mb-2">Status</h2>
-              <div class="bg-gray-100 rounded-lg px-4 py-3 text-gray-500 text-sm sm:text-base">Dikerjakan</div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6">
-              <button type="button" class="bg-gold hover:brightness-105 transition text-white font-bold px-7 py-3.5 rounded-xl text-sm sm:text-base">
-                Ubah Data Kendaraan
-              </button>
-              <button type="button" class="bg-chatblue hover:brightness-105 transition text-white font-bold px-7 py-3.5 rounded-xl text-sm sm:text-base">
-                Chat Bengkel
-              </button>
+            <div>
+              <p class="mb-2 font-bold text-gray-900">Status</p>
+              <div class="w-full rounded-lg bg-gray-100 px-4 py-3 text-gray-600">Dikerjakan</div>
             </div>
 
           </div>
+
+          <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <button type="button" class="rounded-lg bg-brand-gold px-6 py-3 font-bold text-white shadow-sm transition hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2">
+              Ubah Data Kendaraan
+            </button>
+            <button type="button" class="rounded-lg bg-blue-600 px-6 py-3 font-bold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
+              Chat Bengkel
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
+  </div>
 
-    <!-- Footer -->
-    <footer class="bg-pitred-dark text-white text-xs sm:text-sm">
-      <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span class="font-semibold">&copy; PitStop. All Rights Reserved.</span>
-        <span class="text-gray-200">V1.0 | Bantuan | Kebijakan Privasi</span>
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-brand-dark px-6 py-5 text-white">
+    <div class="grid grid-cols-1 items-center gap-2 sm:grid-cols-3">
+      <div class="hidden sm:block"></div>
+      <div class="flex items-center justify-center gap-2 whitespace-nowrap text-center font-semibold">
+        <span>&copy;</span>
+        <span>PitStop. All Rights Reserved.</span>
       </div>
-    </footer>
-  </main>
+      <div class="text-center text-xs text-red-200 sm:text-right sm:text-sm">
+        V1.0 &nbsp;|&nbsp; Bantuan &nbsp;|&nbsp; Kebijakan Privasi
+      </div>
+    </div>
+  </footer>
+</div>
 
 </body>
 </html>

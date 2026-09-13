@@ -1,6 +1,6 @@
 <div align="center">
 
-![image](public\images\logo.png)
+![image](logo.png)
 
 # PitStop — Sistem Informasi Bengkel
 

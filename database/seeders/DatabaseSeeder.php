@@ -20,5 +20,11 @@ class DatabaseSeeder extends Seeder
             ['username' => 'ajung'],
             ['password' => 'bengkel123', 'role' => 'owner'],
         );
+
+        // Akun admin khusus. Username: admin, password: admin.
+        User::firstOrCreate(
+            ['username' => 'admin'],
+            ['password' => 'admin', 'role' => 'admin'],
+        );
     }
 }

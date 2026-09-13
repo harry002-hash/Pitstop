@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\DashboardController;
@@ -58,6 +59,12 @@ Route::middleware('claimed')->group(function () {
 
     Route::post('/chat/send', [ChatController::class, 'send'])
         ->name('chat.send');
+});
+
+// Khusus admin (username "admin"). Tidak lewat /claim.
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])
+        ->name('dashboard');
 });
 
 // Khusus pemilik bengkel (Ajung).

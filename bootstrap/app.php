@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureOwner;
 use App\Http\Middleware\EnsureVehicleClaimed;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'admin' => EnsureAdmin::class,
             'owner' => EnsureOwner::class,
             'claimed' => EnsureVehicleClaimed::class,
         ]);

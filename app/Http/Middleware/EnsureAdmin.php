@@ -6,14 +6,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureVehicleClaimed
+class EnsureAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
-
-        if ($user && ! $user->isOwner() && ! $user->isAdmin() && ! $user->vehicles()->exists()) {
-            return redirect()->route('vehicle.claim');
+        if (! auth()->check() || ! auth()->user()->isAdmin()) {
+            abort(403, 'Hanya admin.');
         }
 
         return $next($request);

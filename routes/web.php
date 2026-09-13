@@ -26,9 +26,6 @@ Route::view('dashboard', 'dashboard')->middleware('auth')->name('dashboard');
 
 
 //Register Page
-Route::view('register', 'register')->name('register');
-
-
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
@@ -43,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::post('/logout', [LoginController::class, 'destroy'])
+    Route::post('login', [LoginController::class, 'destroy'])
         ->name('logout');
 
     // Customer mengklaim motor (isi KB + password dari bengkel).
@@ -93,8 +90,4 @@ Route::middleware('auth')->group(function () {
 Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('vehicle.edit');
 Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('vehicle.update');
 
-
-Route::post('register', RegisterController::class)->name('register.store');
-
-   Route::get('/user/dashboard', fn () => view('user.dashboard'));
-
+Route::get('/user/dashboard', fn () => view('user.dashboard'));

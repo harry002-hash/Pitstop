@@ -22,12 +22,15 @@ class RegisterController extends Controller
     public function store(Request $request)
     {
         $userData = $request->validate([
-            'name' => ['required', 'string'],
-            'password' => ['required', 'confirmed']
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
+            'password' => ['required', 'confirmed'],
         ]);
 
-        $userData['password'] = bcrypt($userData['password']);
-        $user = User::create($userData);
+        $user = new User;
+        $user->username = $userData['username'];
+        $user->password = $userData['password'];
+
+        $user->save();
 
         Auth::login($user);
 

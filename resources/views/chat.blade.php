@@ -28,7 +28,7 @@
             {{ $vehicle->plate_number ?? 'KB 8123 XG' }}
         </h1>
         <p class="mt-2 text-lg font-bold text-gray-900 sm:text-2xl">
-            {{ $vehicle->owner_name ?? 'Budi Hermanto' }}, {{ $vehicle->model ?? 'Vario 125 Gen 1' }}, {{ $vehicle->type ?? 'Motor' }}
+            {{ $vehicle->owner_name ?? 'Budi Hermanto' }}, {{ $vehic    e->model ?? 'Vario 125 Gen 1' }}, {{ $vehicle->type ?? 'Motor' }}
         </p>
 
         <div class="mt-8 flex gap-3">

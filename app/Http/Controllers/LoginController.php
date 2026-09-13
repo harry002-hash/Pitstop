@@ -11,6 +11,14 @@ class LoginController extends Controller
      */
     public function __invoke(Request $request)
     {
+
+ Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+
         $creds = $request->validate([
             'name' => ['required'],
             'password' => ['required']

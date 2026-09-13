@@ -20,7 +20,7 @@
 
             {{-- Logo: point this at your own logo file --}}
             <div class="flex justify-center pt-10 pb-8 px-6">
-                <img src="{{ asset('images/logo-pitstop.png') }}" alt="PitStop" class="w-32 h-auto">
+                <img src="{{ asset('images/logo.png') }}" alt="PitStop" class="w-32 h-auto">
             </div>
 
             {{-- Route names below are placeholders - rename to match your actual routes --}}
@@ -46,13 +46,13 @@
             {{-- Social icons: point each src at your own icon file --}}
             <div class="flex justify-center gap-4 pb-8">
                 <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
-                    <img src="{{ asset('images/social-instagram.png') }}" alt="Instagram" class="w-9 h-9 rounded-full">
+                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-9 h-9 rounded-full">
                 </a>
                 <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
-                    <img src="{{ asset('images/social-facebook.png') }}" alt="Facebook" class="w-9 h-9 rounded-full">
+                    <img src="{{ asset('images/fb.png') }}" alt="Facebook" class="w-9 h-9 rounded-full">
                 </a>
                 <a href="#" target="_blank" rel="noopener" aria-label="YouTube">
-                    <img src="{{ asset('images/social-youtube.png') }}" alt="YouTube" class="w-9 h-9 rounded-full">
+                    <img src="{{ asset('images/yt.png') }}" alt="YouTube" class="w-9 h-9 rounded-full">
                 </a>
             </div>
 

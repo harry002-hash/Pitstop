@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(): RedirectResponse
+    public function index(Request $request): RedirectResponse
     {
-        if (auth()->user()->isAdmin() || auth()->user()->isOwner()) {
-            return redirect()->route('owner.vehicles.index');
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect()->route('login');
         }
 
-        if (! auth()->user()->vehicles()->exists()) {
+        if ($user->isAdmin() || $user->isOwner()) {
+            return redirect()->route('owner.dashboard');
+        }
+
+        if (! $user->vehicles()->exists()) {
             return redirect()->route('vehicle.claim');
         }
 

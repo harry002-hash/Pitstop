@@ -10,7 +10,7 @@ class StoreVehicleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isOwner();
+        return auth()->check() && (auth()->user()->isOwner() || auth()->user()->isAdmin());
     }
 
     /**

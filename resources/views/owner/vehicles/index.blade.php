@@ -32,13 +32,13 @@
                                 : 'bg-white text-red-800 hover:bg-red-50' }}">
                     Halaman Utama
                 </a>
-                <a href="{{ route('owner.vehicles.index') }}"
+                <button type="button" id="generate-open-btn"
                    class="text-center rounded-lg py-3 font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white
                           {{ request()->routeIs('owner.vehicles.*')
                                 ? 'bg-red-600 text-white'
                                 : 'bg-white text-red-800 hover:bg-red-50' }}">
-                    Daftar Motor
-                </a>
+                    Generate Akun
+                </button>
             </nav>
 
             <div class="flex-1"></div>
@@ -209,7 +209,7 @@
                             @empty
                                 <tr>
                                     <td colspan="7" class="py-10 text-center text-gray-500">
-                                        Belum ada motor. Klik "Daftar Motor" untuk menambahkan.
+                                        Belum ada motor. Klik "Generate Akun" untuk menambahkan.
                                     </td>
                                 </tr>
                             @endforelse
@@ -229,6 +229,144 @@
         </div>
     </footer>
 </div>
+
+{{-- ============ GENERATE AKUN MODAL ============ --}}
+<div id="generate-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    {{-- Backdrop --}}
+    <div id="generate-backdrop" class="absolute inset-0 bg-black/60"></div>
+
+    {{-- Card --}}
+    <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="flex">
+            <div class="w-2 flex shrink-0">
+                <div class="w-1/2 bg-red-600"></div>
+                <div class="w-1/2 bg-red-900"></div>
+            </div>
+
+            <div class="flex-1 p-6 sm:p-8">
+                <div class="flex items-start justify-between gap-4 mb-1">
+                    <h2 class="text-xl font-extrabold text-gray-900">Generate Akun</h2>
+                    <button type="button" id="generate-close-btn" aria-label="Tutup"
+                            class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">
+                    Buat KB + password untuk customer. Customer memakai keduanya di halaman klaim untuk masuk ke dashboard.
+                </p>
+
+                @if ($errors->any())
+                    <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 mb-4">
+                        <ul class="list-disc list-inside space-y-0.5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('owner.vehicles.store') }}" class="flex flex-col gap-4">
+                    @csrf
+                    <input type="hidden" name="status" value="{{ \App\Models\Vehicle::STATUS_BELUM_SERVIS }}">
+
+                    <div>
+                        <label for="generate-vehicle-name" class="block text-sm font-bold text-gray-800 mb-1.5">Nama Kendaraan</label>
+                        <input type="text" id="generate-vehicle-name" name="vehicle_name" value="{{ old('vehicle_name') }}"
+                               placeholder="cth: Vario 125" required maxlength="100"
+                               class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600">
+                    </div>
+
+                    <div>
+                        <label for="generate-plate-number" class="block text-sm font-bold text-gray-800 mb-1.5">KB / Plat Kendaraan</label>
+                        <input type="text" id="generate-plate-number" name="plate_number" value="{{ old('plate_number') }}"
+                               placeholder="cth: KB 1234 AB" required maxlength="20"
+                               class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600">
+                    </div>
+
+                    <div>
+                        <label for="generate-plate-password" class="block text-sm font-bold text-gray-800 mb-1.5">Password</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="generate-plate-password" name="plate_password" value="{{ old('plate_password') }}"
+                                   placeholder="min. 4 karakter" required minlength="4" maxlength="50" autocomplete="off"
+                                   class="flex-1 min-w-0 rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600">
+                            <button type="button" id="generate-random-btn" title="Buat password acak"
+                                    class="shrink-0 w-[46px] flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+                                    <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>
+                                    <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+                                    <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-1">
+                        <button type="button" id="generate-cancel-btn"
+                                class="flex-1 rounded-lg border border-gray-300 text-gray-700 font-bold py-2.5 text-sm hover:bg-gray-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="flex-1 rounded-lg bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-2.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600">
+                            Generate
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const modal = document.getElementById('generate-modal');
+        const openBtn = document.getElementById('generate-open-btn');
+        const closeBtn = document.getElementById('generate-close-btn');
+        const cancelBtn = document.getElementById('generate-cancel-btn');
+        const backdrop = document.getElementById('generate-backdrop');
+        const passwordInput = document.getElementById('generate-plate-password');
+        const randomBtn = document.getElementById('generate-random-btn');
+        const firstField = document.getElementById('generate-vehicle-name');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            if (firstField) {
+                firstField.focus();
+            }
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        randomBtn.addEventListener('click', () => {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+            let out = '';
+            for (let i = 0; i < 8; i++) {
+                out += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            passwordInput.value = out;
+        });
+
+        @if ($errors->any())
+            openModal();
+        @endif
+    })();
+</script>
 
 </body>
 </html>

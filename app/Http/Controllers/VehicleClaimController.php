@@ -12,15 +12,21 @@ class VehicleClaimController extends Controller
 {
     public function create(): View|RedirectResponse
     {
-        if (auth()->user()->isAdmin()) {
-            return redirect()->route('owner.vehicles.index');
+        $user = auth()->user();
+
+        if (! $user) {
+            return redirect()->route('login');
         }
 
-        if (auth()->user()->isOwner()) {
-            return redirect()->route('owner.vehicles.index');
+        if ($user->isAdmin()) {
+            return redirect()->route('owner.dashboard');
         }
 
-        if (auth()->user()->vehicles()->exists()) {
+        if ($user->isOwner()) {
+            return redirect()->route('owner.dashboard');
+        }
+
+        if ($user->vehicles()->exists()) {
             return redirect()->route('customer.dashboard');
         }
 

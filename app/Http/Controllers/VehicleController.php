@@ -15,7 +15,12 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::with('owner:id,username')->latest()->get();
 
-        return view('owner.vehicles.index', compact('vehicles'));
+        return view('owner.vehicles.index', [
+            'vehicles' => $vehicles,
+            'antrianTungguCount' => $vehicles->where('status', Vehicle::STATUS_BELUM_SERVIS)->count(),
+            'prosesPengerjaanCount' => $vehicles->where('status', Vehicle::STATUS_SEDANG_SERVIS)->count(),
+            'thirdCardCount' => $vehicles->where('status', Vehicle::STATUS_SELESAI)->count(),
+        ]);
     }
 
     public function create(): View

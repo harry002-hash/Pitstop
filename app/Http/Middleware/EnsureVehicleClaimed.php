@@ -12,7 +12,11 @@ class EnsureVehicleClaimed
     {
         $user = auth()->user();
 
-        if ($user && ! $user->isOwner() && ! $user->isAdmin() && ! $user->vehicles()->exists()) {
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        if (! $user->isOwner() && ! $user->isAdmin() && ! $user->vehicles()->exists()) {
             return redirect()->route('vehicle.claim');
         }
 

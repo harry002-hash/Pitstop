@@ -286,5 +286,5 @@ vendor/bin/pint --dirty --format agent
 
 ## Lisensi
 
-Proyek tugas kuliah — bebas dipakai untuk keperluan pembelajaran.
+Proyek tugas Sekolah — bebas dipakai untuk keperluan pembelajaran.
 Komponen framework Laravel berlisensi [MIT](https://opensource.org/licenses/MIT).

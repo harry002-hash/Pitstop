@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard Bengkel - PitStop</title>
 
     {{-- Quick-start Tailwind via CDN so this renders immediately. If Tailwind is already
@@ -192,13 +193,16 @@
                                     <td class="py-4 px-4">{{ $vehicle->vehicle_name }}</td>
                                     <td class="py-4 px-4">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="{{ route('owner.vehicles.edit', $vehicle) }}"
+                                            <a href="{{ route('vehicles.edit', $vehicle) }}"
                                                class="rounded-md border border-blue-500 text-blue-600 text-xs font-semibold px-3 py-1.5 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
                                                 Ubah
                                             </a>
-                                            {{-- Notification/reminder action - wire this up to whatever it should trigger --}}
+                                            {{-- Kirim pengingat ke customer pemilik motor --}}
                                             <button type="button" aria-label="Kirim pengingat"
-                                                    class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-400 text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500">
+                                                    title="Kirim pengingat ke {{ $vehicle->owner?->username ?? 'customer' }}"
+                                                    data-remind-url="{{ route('owner.vehicles.remind', $vehicle) }}"
+                                                    data-remind-to="{{ $vehicle->owner?->username ?? '' }}"
+                                                    class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-400 text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 disabled:opacity-50">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                                 </svg>
@@ -229,6 +233,58 @@
         </div>
     </footer>
 </div>
+
+<script>
+    // Tombol lonceng per baris: kirim pengingat (masuk sebagai pesan chat ke customer).
+    (() => {
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+        document.querySelectorAll('[data-remind-url]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                if (button.disabled) {
+                    return;
+                }
+
+                if (!button.dataset.remindTo) {
+                    alert('Motor ini belum diklaim customer.');
+                    return;
+                }
+
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(button.dataset.remindUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrf,
+                            'Accept': 'application/json',
+                            ...(window.Echo?.socketId() ? { 'X-Socket-ID': window.Echo.socketId() } : {}),
+                        },
+                    });
+
+                    const data = await response.json().catch(() => ({}));
+
+                    if (!response.ok || !data.success) {
+                        alert(data.message ?? 'Gagal mengirim pengingat.');
+                        return;
+                    }
+
+                    button.classList.replace('text-gray-600', 'text-green-600');
+                    button.classList.replace('border-gray-400', 'border-green-500');
+
+                    setTimeout(() => {
+                        button.classList.replace('text-green-600', 'text-gray-600');
+                        button.classList.replace('border-green-500', 'border-gray-400');
+                    }, 2000);
+                } catch (error) {
+                    alert('Gagal mengirim pengingat. Periksa koneksi Anda.');
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        });
+    })();
+</script>
 
 </body>
 </html>

@@ -3,7 +3,6 @@
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\VehicleClaimController;
@@ -40,6 +39,13 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 
+    // Ubah data motor: staff boleh semua, customer hanya miliknya (dicek VehiclePolicy).
+    Route::get('/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
+        ->name('vehicles.edit');
+
+    Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update'])
+        ->name('vehicles.update');
+
     // Customer yang sudah klaim + owner.
     Route::middleware('claimed')->group(function () {
 
@@ -65,16 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/vehicles', [VehicleController::class, 'store'])
             ->name('vehicles.store');
 
-        Route::get('/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
-            ->name('vehicles.edit');
-
-        Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update'])
-            ->name('vehicles.update');
-    });
-
-    // Menggunakan format RESTful dengan ID kendaraan
-    Route::middleware('owner')->group(function () {
-        Route::get('/vehicles/{id}/edit', [KendaraanController::class, 'edit'])->name('vehicle.edit');
-        Route::put('/vehicles/{id}', [KendaraanController::class, 'update'])->name('vehicle.update');
+        Route::post('/vehicles/{vehicle}/remind', [VehicleController::class, 'remind'])
+            ->name('vehicles.remind');
     });
 });

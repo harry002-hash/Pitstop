@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\VehicleFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vehicle extends Model
 {
+    /** @use HasFactory<VehicleFactory> */
+    use HasFactory;
+
     public const STATUS_BELUM_SERVIS = 'belum_servis';
 
     public const STATUS_SEDANG_SERVIS = 'sedang_servis';
@@ -15,6 +20,7 @@ class Vehicle extends Model
 
     protected $fillable = [
         'user_id',
+        'vehicle_type',
         'vehicle_name',
         'plate_number',
         'plate_password',

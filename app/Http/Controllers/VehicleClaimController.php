@@ -6,27 +6,24 @@ use App\Http\Requests\ClaimVehicleRequest;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class VehicleClaimController extends Controller
 {
-    public function create(): View|RedirectResponse
+    public function create(Request $request): View|RedirectResponse
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if (! $user) {
             return redirect()->route('login');
         }
 
-        if ($user->isAdmin()) {
+        if ($user->isStaff()) {
             return redirect()->route('owner.dashboard');
         }
 
-        if ($user->isOwner()) {
-            return redirect()->route('owner.dashboard');
-        }
-
-        if ($user->vehicles()->exists()) {
+        if ($user->hasVehicle()) {
             return redirect()->route('customer.dashboard');
         }
 
@@ -41,11 +38,11 @@ class VehicleClaimController extends Controller
             return back()->withErrors(['plate_number' => 'Nomor KB atau password salah.'])->onlyInput('plate_number');
         }
 
-        if ($vehicle->isClaimed() && $vehicle->user_id !== auth()->id()) {
+        if ($vehicle->isClaimed() && $vehicle->user_id !== $request->user()->id) {
             return back()->withErrors(['plate_number' => 'Motor ini sudah diklaim akun lain.'])->onlyInput('plate_number');
         }
 
-        $vehicle->update(['user_id' => auth()->id()]);
+        $vehicle->update(['user_id' => $request->user()->id]);
 
         return redirect()->route('customer.dashboard')->with('status', 'Motor berhasil ditautkan.');
     }

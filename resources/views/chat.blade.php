@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Chat</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body data-auth-id="{{ auth()->id() }}">
 
     <h1>Chat</h1>
 
@@ -19,7 +21,7 @@
         @endforeach
     </div>
 
-    <form id="chat-form">
+    <form id="chat-form" action="{{ route('chat.send') }}" method="POST">
 
         <input
             type="number"
@@ -53,22 +55,22 @@
         function appendMessage(data) {
             document.getElementById('empty-message')?.remove();
 
-            const li = document.createElement('li');
+            const item = document.createElement('div');
             const mine = Number(data.sender_id) === authId ? ' (you)' : '';
             const time = data.created_at ? new Date(data.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
-            li.textContent = `${data.sender ?? 'User'}${mine}: ${data.message} ${time}`;
-            list.appendChild(li);
+            item.textContent = `${data.sender ?? 'User'}${mine}: ${data.message} ${time}`;
+            list.appendChild(item);
         }
 
-        // Realtime: listen on public `chat` channel, event `.message.sent`.
-        // app.js (Echo) must be loaded via vite above, and `php artisan reverb:start` running.
+        // Realtime: channel privat milik user yang login, event `.message.sent`.
+        // app.js (Echo) dimuat lewat vite di atas, dan `php artisan reverb:start` harus jalan.
         window.addEventListener('load', () => {
             if (!window.Echo) {
                 console.warn('Echo not loaded. Run: npm run dev (or build) + php artisan reverb:start');
                 return;
             }
-            window.Echo.channel('chat').listen('.message.sent', appendMessage);
+            window.Echo.private('App.Models.User.' + authId).listen('.message.sent', appendMessage);
         });
 
         form.addEventListener('submit', async (e) => {

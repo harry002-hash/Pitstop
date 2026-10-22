@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/images/logo.png" alt="PitStop" width="160">
+![image](logo.png)
 
 # PitStop — Sistem Informasi Bengkel
 
@@ -349,5 +349,4 @@ vendor/bin/pint --dirty --format agent
 ---
 
 ## Lisensi
-
-MIT, nothing to do, also can contri, etc.
+MIT, free to use

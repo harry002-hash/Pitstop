@@ -15,11 +15,11 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
-        if ($user->isAdmin() || $user->isOwner()) {
+        if ($user->isStaff()) {
             return redirect()->route('owner.dashboard');
         }
 
-        if (! $user->vehicles()->exists()) {
+        if (! $user->hasVehicle()) {
             return redirect()->route('vehicle.claim');
         }
 

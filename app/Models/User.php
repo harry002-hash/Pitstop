@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -41,8 +41,29 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    /**
+     * Admin dan owner sama-sama boleh mengelola bengkel.
+     */
+    public function isStaff(): bool
+    {
+        return $this->isAdmin() || $this->isOwner();
+    }
+
     public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);
+    }
+
+    /**
+     * Motor terakhir yang ditautkan ke customer ini.
+     */
+    public function vehicle(): HasOne
+    {
+        return $this->hasOne(Vehicle::class)->latestOfMany();
+    }
+
+    public function hasVehicle(): bool
+    {
+        return $this->vehicles()->exists();
     }
 }

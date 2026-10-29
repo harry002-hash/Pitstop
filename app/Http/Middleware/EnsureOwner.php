@@ -10,11 +10,11 @@ class EnsureOwner
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! auth()->check()) {
+        if (! $request->user()) {
             return redirect()->route('login');
         }
 
-        if (! auth()->user()->isOwner() && ! auth()->user()->isAdmin()) {
+        if (! $request->user()->isStaff()) {
             abort(403, 'Hanya pemilik bengkel.');
         }
 

@@ -35,6 +35,7 @@ class VehicleStatusUpdated implements ShouldBroadcastNow
     {
         return [
             'id' => $this->vehicle->id,
+            'plate_number' => $this->vehicle->plate_number,
             'status' => $this->vehicle->status,
             'status_label' => $this->vehicle->statusLabel(),
         ];

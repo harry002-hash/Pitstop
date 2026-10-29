@@ -10,13 +10,13 @@ class EnsureVehicleClaimed
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if (! $user) {
             return redirect()->route('login');
         }
 
-        if (! $user->isOwner() && ! $user->isAdmin() && ! $user->vehicles()->exists()) {
+        if (! $user->isStaff() && ! $user->hasVehicle()) {
             return redirect()->route('vehicle.claim');
         }
 

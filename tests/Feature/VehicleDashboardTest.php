@@ -2,6 +2,7 @@
 
 use App\Models\Message;
 use App\Models\Vehicle;
+use Illuminate\Support\Facades\Hash;
 
 test('customer dashboard shows the real vehicle from database', function () {
     $user = customer();
@@ -138,4 +139,25 @@ test('changing status to non-selesai sends no message', function () {
     ]);
 
     expect(Message::where('receiver_id', $user->id)->count())->toBe(0);
+});
+
+test('customer cannot change the plate password', function () {
+    $user = customer();
+    $vehicle = Vehicle::factory()->claimedBy($user)->create([
+        'plate_password' => 'rahasia1',
+    ]);
+
+    $this->actingAs($user)->put(route('vehicles.update', $vehicle), [
+        'plate_number' => $vehicle->plate_number,
+        'vehicle_name' => $vehicle->vehicle_name,
+        'plate_password' => 'password-baru',
+    ])->assertRedirect(route('customer.dashboard'));
+
+    expect(Hash::check('rahasia1', $vehicle->refresh()->plate_password))->toBeTrue();
+});
+
+test('vehicle serialization hides the plate password hash', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    expect($vehicle->toArray())->not->toHaveKey('plate_password');
 });

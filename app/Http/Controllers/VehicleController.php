@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\VehicleStatusUpdated;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
-use App\Models\Message;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
-use Throwable;
 
 class VehicleController extends Controller
 {
@@ -57,7 +54,7 @@ class VehicleController extends Controller
     {
         $data = $request->safe()->except('plate_password');
 
-        if ($request->filled('plate_password')) {
+        if ($request->user()->isStaff() && $request->filled('plate_password')) {
             $data['plate_password'] = $request->validated('plate_password');
         }
 
@@ -66,17 +63,12 @@ class VehicleController extends Controller
         $vehicle->update($data);
 
         if ($statusChanged) {
-            try {
-                broadcast(new VehicleStatusUpdated($vehicle->refresh()));
-            } catch (Throwable $exception) {
-                report($exception);
-            }
+            $vehicle->refresh()->broadcastStatusUpdate();
 
             // Motor selesai -> kabari pemiliknya lewat chat (sekaligus jadi popup).
-            if ($data['status'] === Vehicle::STATUS_SELESAI && $vehicle->owner) {
-                Message::deliver(
+            if ($data['status'] === Vehicle::STATUS_SELESAI) {
+                $vehicle->notifyOwner(
                     $request->user(),
-                    $vehicle->owner,
                     'Kabar gembira! Motor '.$vehicle->plate_number.' kamu sudah SELESAI diservis. Silakan ambil di bengkel ya!',
                 );
             }
@@ -92,17 +84,14 @@ class VehicleController extends Controller
      */
     public function remind(Request $request, Vehicle $vehicle): JsonResponse
     {
-        $vehicle->loadMissing('owner:id,username');
-
-        if (! $vehicle->owner) {
-            return response()->json(['message' => 'Motor belum diklaim customer.'], 422);
-        }
-
-        Message::deliver(
+        $reminderSent = $vehicle->notifyOwner(
             $request->user(),
-            $vehicle->owner,
             'Pengingat dari bengkel: status motor '.$vehicle->plate_number.' kamu saat ini "'.$vehicle->statusLabel().'". Pantau terus ya!',
         );
+
+        if (! $reminderSent) {
+            return response()->json(['message' => 'Motor belum diklaim customer.'], 422);
+        }
 
         return response()->json([
             'success' => true,

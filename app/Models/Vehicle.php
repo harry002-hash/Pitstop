@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Events\VehicleStatusUpdated;
 use Database\Factories\VehicleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Throwable;
 
 class Vehicle extends Model
 {
@@ -25,6 +27,15 @@ class Vehicle extends Model
         'plate_number',
         'plate_password',
         'status',
+    ];
+
+    /**
+     * Hash password klaim tidak boleh ikut terserialisasi (JSON, event, dsb).
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'plate_password',
     ];
 
     /**
@@ -62,5 +73,45 @@ class Vehicle extends Model
     public function isClaimed(): bool
     {
         return $this->user_id !== null;
+    }
+
+    /**
+     * Payload status yang dipakai bersama oleh endpoint polling dan event real-time.
+     *
+     * @return array<string, mixed>
+     */
+    public function statusPayload(): array
+    {
+        return [
+            'id' => $this->id,
+            'plate_number' => $this->plate_number,
+            'status' => $this->status,
+            'status_label' => $this->statusLabel(),
+        ];
+    }
+
+    /**
+     * Siarkan perubahan status ke dashboard customer; kegagalan Reverb tidak
+     * boleh membatalkan perubahan data yang sudah tersimpan.
+     */
+    public function broadcastStatusUpdate(): void
+    {
+        try {
+            broadcast(new VehicleStatusUpdated($this));
+        } catch (Throwable $exception) {
+            report($exception);
+        }
+    }
+
+    /**
+     * Kirim pesan chat ke customer pemilik motor. Null kalau motor belum diklaim.
+     */
+    public function notifyOwner(User $sender, string $body): ?Message
+    {
+        if (! $this->owner) {
+            return null;
+        }
+
+        return Message::deliver($sender, $this->owner, $body);
     }
 }

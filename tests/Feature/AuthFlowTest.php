@@ -51,3 +51,19 @@ test('login rejects a wrong password', function () {
 
     $this->assertGuest();
 });
+
+test('login is throttled after too many attempts', function () {
+    User::factory()->create(['username' => 'siti']);
+
+    foreach (range(1, 5) as $attempt) {
+        $this->post(route('login.attempt'), [
+            'username' => 'siti',
+            'password' => 'wrong-password',
+        ])->assertRedirect();
+    }
+
+    $this->post(route('login.attempt'), [
+        'username' => 'siti',
+        'password' => 'wrong-password',
+    ])->assertStatus(429);
+});

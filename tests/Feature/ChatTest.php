@@ -63,6 +63,19 @@ test('guests cannot open the chat', function () {
     $this->get(route('chat'))->assertRedirect(route('login'));
 });
 
+test('customer cannot send a message to another customer', function () {
+    $sender = customer();
+    $other = customer();
+
+    $this->actingAs($sender)
+        ->postJson(route('chat.send'), [
+            'receiver_id' => $other->id,
+            'message' => 'Halo customer lain',
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('receiver_id');
+});
+
 test('message events are broadcast privately to the receiver', function () {
     $sender = customer();
     $receiver = owner();

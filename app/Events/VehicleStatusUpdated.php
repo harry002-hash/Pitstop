@@ -33,11 +33,6 @@ class VehicleStatusUpdated implements ShouldBroadcastNow
      */
     public function broadcastWith(): array
     {
-        return [
-            'id' => $this->vehicle->id,
-            'plate_number' => $this->vehicle->plate_number,
-            'status' => $this->vehicle->status,
-            'status_label' => $this->vehicle->statusLabel(),
-        ];
+        return $this->vehicle->statusPayload();
     }
 }

@@ -17,11 +17,6 @@ class CustomerDashboardController extends Controller
     {
         $vehicle = $request->user()->vehicle()->firstOrFail();
 
-        return response()->json([
-            'id' => $vehicle->id,
-            'plate_number' => $vehicle->plate_number,
-            'status' => $vehicle->status,
-            'status_label' => $vehicle->statusLabel(),
-        ]);
+        return response()->json($vehicle->statusPayload());
     }
 }

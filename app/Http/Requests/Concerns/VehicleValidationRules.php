@@ -8,8 +8,6 @@ use Illuminate\Validation\Rule;
 trait VehicleValidationRules
 {
     /**
-     * Aturan validasi yang dipakai bersama oleh store & update.
-     *
      * @return array<string, array<int, mixed>>
      */
     protected function vehicleRules(?Vehicle $vehicle = null): array

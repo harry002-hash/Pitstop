@@ -22,7 +22,7 @@ class UpdateVehicleRequest extends FormRequest
     }
 
     /**
-     * Customer tidak boleh mengubah status / jenis kendaraan.
+     * Customer tidak boleh mengubah status / jenis kendaraan / password klaim.
      *
      * @return array<string, array<int, mixed>>
      */
@@ -32,7 +32,7 @@ class UpdateVehicleRequest extends FormRequest
         $rules = $this->vehicleRules($vehicle instanceof Vehicle ? $vehicle : null);
 
         if (! $this->user()?->isStaff()) {
-            unset($rules['vehicle_type'], $rules['status']);
+            unset($rules['vehicle_type'], $rules['status'], $rules['plate_password']);
         }
 
         return $rules;

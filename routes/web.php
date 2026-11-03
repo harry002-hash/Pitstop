@@ -16,11 +16,15 @@ Route::get('/', function () {
 // Login Page
 Route::get('login', [LoginController::class, 'create'])->name('login');
 
-Route::post('login', [LoginController::class, 'store'])->name('login.attempt');
+Route::post('login', [LoginController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('login.attempt');
 
 // Register Page
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
-Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+Route::post('/register', [RegisterController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('register.store');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
@@ -33,17 +37,21 @@ Route::middleware('auth')->group(function () {
         ->name('vehicle.claim');
 
     Route::post('/claim', [VehicleClaimController::class, 'store'])
+        ->middleware('throttle:10,1')
         ->name('vehicle.claim.store');
 
     Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 
-    Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+    Route::post('/chat/send', [ChatController::class, 'send'])
+        ->middleware('throttle:30,1')
+        ->name('chat.send');
 
     // Ubah data motor: staff boleh semua, customer hanya miliknya (dicek VehiclePolicy).
     Route::get('/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
         ->name('vehicles.edit');
 
     Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update'])
+        ->middleware('throttle:30,1')
         ->name('vehicles.update');
 
     // Customer yang sudah klaim + owner.
@@ -72,6 +80,7 @@ Route::middleware('auth')->group(function () {
             ->name('vehicles.store');
 
         Route::post('/vehicles/{vehicle}/remind', [VehicleController::class, 'remind'])
+            ->middleware('throttle:20,1')
             ->name('vehicles.remind');
     });
 });

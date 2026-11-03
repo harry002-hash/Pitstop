@@ -16,7 +16,7 @@ class EnsureVehicleClaimed
             return redirect()->route('login');
         }
 
-        if (! $user->isStaff() && ! $user->hasVehicle()) {
+        if ($user->shouldClaimVehicle()) {
             return redirect()->route('vehicle.claim');
         }
 

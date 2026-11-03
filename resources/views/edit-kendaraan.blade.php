@@ -20,9 +20,20 @@
             </div>
 
             <!-- Notifikasi Sukses -->
-            @if(session('success'))
+            @if(session('status'))
                 <div class="mb-4 p-3 bg-green-600 text-white rounded-lg text-sm">
-                    {{ session('success') }}
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            <!-- Notifikasi Validasi -->
+            @if($errors->any())
+                <div class="mb-4 p-3 bg-red-600 text-white rounded-lg text-sm">
+                    <ul class="list-disc list-inside">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 
@@ -37,18 +48,18 @@
                 </div>
 
                 <!-- Form Area -->
-                <form action="{{ route('kendaraan.update', $kendaraan['id'] ?? 1) }}" method="POST" class="flex-1 p-8 flex flex-col space-y-4">
+                <form action="{{ route('vehicles.update', $vehicle) }}" method="POST" class="flex-1 p-8 flex flex-col space-y-4">
                     @csrf
                     @method('PUT')
                     
                     <!-- Plat Kendaraan -->
                     <div class="flex flex-col">
-                        <label for="license_plate" class="text-black font-semibold text-sm mb-1.5">Plat Kendaraan</label>
+                        <label for="plate_number" class="text-black font-semibold text-sm mb-1.5">Plat Kendaraan</label>
                         <input 
                             type="text" 
-                            id="license_plate"
-                            name="license_plate"
-                            value="{{ old('license_plate', $kendaraan['license_plate'] ?? 'KB 8123 XG') }}" 
+                            id="plate_number"
+                            name="plate_number"
+                            value="{{ old('plate_number', $vehicle->plate_number) }}" 
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -61,7 +72,8 @@
                             type="text" 
                             id="owner_name"
                             name="owner_name"
-                            value="{{ old('owner_name', $kendaraan['owner_name'] ?? 'Budi Heremanto') }}" 
+                            value="{{ $vehicle->owner?->username ?? 'Belum diklaim' }}" 
+                            readonly
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -74,7 +86,8 @@
                             type="text" 
                             id="vehicle_type"
                             name="vehicle_type"
-                            value="{{ old('vehicle_type', $kendaraan['vehicle_type'] ?? 'Motor') }}" 
+                            value="{{ old('vehicle_type', $vehicle->vehicle_type ?? 'Motor') }}" 
+                            @unless(auth()->user()->isStaff()) readonly @endunless
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -87,7 +100,7 @@
                             type="text" 
                             id="vehicle_name"
                             name="vehicle_name"
-                            value="{{ old('vehicle_name', $kendaraan['vehicle_name'] ?? 'Vario 125 Gen 1') }}" 
+                            value="{{ old('vehicle_name', $vehicle->vehicle_name) }}" 
                             class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 focus:outline-none focus:bg-white focus:border-red-500 transition-all"
                             required
                         />
@@ -101,10 +114,11 @@
                                 id="status"
                                 name="status" 
                                 class="w-full bg-[#f4f4f4] text-gray-700 text-xs font-medium rounded-lg px-4 py-3 border border-gray-200 appearance-none focus:outline-none focus:bg-white focus:border-red-500 pr-10 cursor-pointer"
+                                @unless(auth()->user()->isStaff()) disabled @endunless
                             >
-                                <option value="Dikerjakan" {{ (old('status', $kendaraan['status'] ?? '') == 'Dikerjakan') ? 'selected' : '' }}>Dikerjakan</option>
-                                <option value="Selesai" {{ (old('status', $kendaraan['status'] ?? '') == 'Selesai') ? 'selected' : '' }}>Selesai</option>
-                                <option value="Pending" {{ (old('status', $kendaraan['status'] ?? '') == 'Pending') ? 'selected' : '' }}>Pending</option>
+                                @foreach ($statuses as $value => $label)
+                                    <option value="{{ $value }}" @selected(old('status', $vehicle->status) === $value)>{{ $label }}</option>
+                                @endforeach
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-600">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">

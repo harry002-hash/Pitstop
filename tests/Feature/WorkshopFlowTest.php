@@ -1,20 +1,6 @@
 <?php
 
-use App\Models\User;
 use App\Models\Vehicle;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
-
-function owner(): User
-{
-    return User::factory()->create(['role' => 'owner']);
-}
-
-function customer(): User
-{
-    return User::factory()->create(['role' => 'customer']);
-}
 
 test('owner can record a new vehicle with plate password', function () {
     $this->actingAs(owner())->post(route('owner.vehicles.store'), [
@@ -28,6 +14,17 @@ test('owner can record a new vehicle with plate password', function () {
 
     expect($vehicle)->not->toBeNull()
         ->and($vehicle->plate_password)->not->toBe('rahasia1'); // hashed
+});
+
+test('admin can also record a vehicle', function () {
+    $this->actingAs(admin())->post(route('owner.vehicles.store'), [
+        'vehicle_name' => 'NMAX',
+        'plate_number' => 'KB 4321 BA',
+        'plate_password' => 'rahasia1',
+        'status' => Vehicle::STATUS_BELUM_SERVIS,
+    ])->assertRedirect(route('owner.vehicles.index'));
+
+    expect(Vehicle::where('plate_number', 'KB 4321 BA')->exists())->toBeTrue();
 });
 
 test('customer cannot access owner area', function () {
@@ -53,11 +50,9 @@ test('customer without vehicle is redirected to claim page', function () {
 test('customer can claim vehicle with correct plate password', function () {
     $user = customer();
 
-    $vehicle = Vehicle::create([
-        'vehicle_name' => 'Vario',
+    $vehicle = Vehicle::factory()->create([
         'plate_number' => 'KB 9999 ZZ',
         'plate_password' => 'kunci123',
-        'status' => Vehicle::STATUS_BELUM_SERVIS,
     ]);
 
     $this->actingAs($user)->post(route('vehicle.claim.store'), [
@@ -71,11 +66,9 @@ test('customer can claim vehicle with correct plate password', function () {
 test('claim fails with wrong plate password', function () {
     $user = customer();
 
-    Vehicle::create([
-        'vehicle_name' => 'Vario',
+    Vehicle::factory()->create([
         'plate_number' => 'KB 9999 ZZ',
         'plate_password' => 'kunci123',
-        'status' => Vehicle::STATUS_BELUM_SERVIS,
     ]);
 
     $this->actingAs($user)->post(route('vehicle.claim.store'), [
@@ -89,15 +82,12 @@ test('claim fails with wrong plate password', function () {
 test('owner can update status and customer sees the new status', function () {
     $user = customer();
 
-    $vehicle = Vehicle::create([
-        'vehicle_name' => 'Beat',
+    $vehicle = Vehicle::factory()->claimedBy($user)->create([
         'plate_number' => 'KB 1111 AA',
-        'plate_password' => 'kunci123',
         'status' => Vehicle::STATUS_SEDANG_SERVIS,
-        'user_id' => $user->id,
     ]);
 
-    $this->actingAs(owner())->put(route('owner.vehicles.update', $vehicle), [
+    $this->actingAs(owner())->put(route('vehicles.update', $vehicle), [
         'vehicle_name' => 'Beat',
         'plate_number' => 'KB 1111 AA',
         'status' => Vehicle::STATUS_SELESAI,

@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,6 +18,13 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Role yang boleh mengelola bengkel.
+     *
+     * @var list<string>
+     */
+    public const STAFF_ROLES = ['admin', 'owner'];
 
     /**
      * Get the attributes that should be cast.
@@ -41,8 +48,49 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    /**
+     * Admin dan owner sama-sama boleh mengelola bengkel.
+     */
+    public function isStaff(): bool
+    {
+        return in_array($this->role, self::STAFF_ROLES, true);
+    }
+
     public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);
+    }
+
+    /**
+     * Motor terakhir yang ditautkan ke customer ini.
+     */
+    public function vehicle(): HasOne
+    {
+        return $this->hasOne(Vehicle::class)->latestOfMany();
+    }
+
+    public function hasVehicle(): bool
+    {
+        return $this->vehicles()->exists();
+    }
+
+    /**
+     * Customer yang belum menautkan motor harus lewat halaman klaim dulu.
+     */
+    public function shouldClaimVehicle(): bool
+    {
+        return ! $this->isStaff() && ! $this->hasVehicle();
+    }
+
+    /**
+     * Halaman pertama yang sesuai untuk user ini (dipakai middleware & controller).
+     */
+    public function landingRouteName(): string
+    {
+        if ($this->isStaff()) {
+            return 'owner.dashboard';
+        }
+
+        return $this->shouldClaimVehicle() ? 'vehicle.claim' : 'customer.dashboard';
     }
 }

@@ -2,27 +2,39 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\VehicleValidationRules;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateVehicleRequest extends FormRequest
 {
+    use VehicleValidationRules;
+
+    /**
+     * Staff boleh mengubah semua motor, customer hanya motornya sendiri.
+     */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isOwner();
+        $vehicle = $this->route('vehicle');
+
+        return $vehicle instanceof Vehicle
+            && ($this->user()?->can('update', $vehicle) ?? false);
     }
 
     /**
+     * Customer tidak boleh mengubah status / jenis kendaraan / password klaim.
+     *
      * @return array<string, array<int, mixed>>
      */
     public function rules(): array
     {
-        return [
-            'vehicle_name' => ['required', 'string', 'max:100'],
-            'plate_number' => ['required', 'string', 'max:20', Rule::unique('vehicles')->ignore($this->vehicle)],
-            'plate_password' => ['nullable', 'string', 'min:4', 'max:50'],
-            'status' => ['required', Rule::in(array_keys(Vehicle::statuses()))],
-        ];
+        $vehicle = $this->route('vehicle');
+        $rules = $this->vehicleRules($vehicle instanceof Vehicle ? $vehicle : null);
+
+        if (! $this->user()?->isStaff()) {
+            unset($rules['vehicle_type'], $rules['status'], $rules['plate_password']);
+        }
+
+        return $rules;
     }
 }

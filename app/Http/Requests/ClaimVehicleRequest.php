@@ -8,7 +8,7 @@ class ClaimVehicleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && ! auth()->user()->isOwner();
+        return $this->user() !== null && ! $this->user()->isStaff();
     }
 
     /**

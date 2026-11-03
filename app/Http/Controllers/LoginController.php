@@ -12,8 +12,12 @@ class LoginController extends Controller
     /**
      * Show the login form.
      */
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
+        if ($request->user()) {
+            return redirect()->route('dashboard');
+        }
+
         return view('login');
     }
 

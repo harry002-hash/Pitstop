@@ -9,9 +9,8 @@ use App\Http\Controllers\VehicleClaimController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Halaman utama langsung menampilkan login (bukan welcome).
+Route::get('/', [LoginController::class, 'create'])->name('home');
 
 // Login Page
 Route::get('login', [LoginController::class, 'create'])->name('login');

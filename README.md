@@ -300,7 +300,7 @@ Dibuat otomatis oleh `php artisan migrate --seed`:
 
 | Method | URL | Nama | Akses |
 | ------ | --- | ---- | ----- |
-| GET | `/` | — | publik |
+| GET | `/` | `home` | login (redirect ke dashboard jika sudah masuk) |
 | GET/POST | `/login` | `login`, `login.attempt` | guest |
 | GET/POST | `/register` | `register`, `register.store` | guest |
 | GET | `/dashboard` | `dashboard` | auth, redirect per role |
